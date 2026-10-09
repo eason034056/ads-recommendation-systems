@@ -1,0 +1,50 @@
+{
+  "dataset": "KuaiRand-Pure",
+  "license": "CC-BY-SA-4.0",
+  "seed": 7,
+  "max_rows": 120000,
+  "retrieval": {
+    "popularity": {
+      "mrr": 0.018801529694349308,
+      "recall@10": 0.03373134328358209,
+      "ndcg@10": 0.017141472864090304,
+      "recall@50": 0.13223880597014925,
+      "ndcg@50": 0.03763355699407784
+    },
+    "item_gru": {
+      "mrr": 0.014938303562553731,
+      "recall@10": 0.028656716417910448,
+      "ndcg@10": 0.013746084477391785,
+      "recall@50": 0.10268656716417911,
+      "ndcg@50": 0.02928312503076932
+    },
+    "rqvae_semantic_gru": {
+      "mrr": 0.002834175293809078,
+      "recall@10": 0.00417910447761194,
+      "ndcg@10": 0.0019818577240280056,
+      "recall@50": 0.013432835820895522,
+      "ndcg@50": 0.003956619050785888
+    }
+  },
+  "ranking": {
+    "deepfm_ctr": {
+      "auc": 0.596341135109137,
+      "pr_auc": 0.5082639722871582,
+      "logloss": 1.34005192018793
+    },
+    "esmm_ctr": {
+      "auc": 0.590201087777574,
+      "pr_auc": 0.5071407528242469,
+      "logloss": 1.3200900090836325
+    },
+    "esmm_post_click_long_view_proxy": {
+      "auc": 0.517114968596367,
+      "pr_auc": 0.7169011440482013,
+      "logloss": 2.062759504554464
+    }
+  },
+  "limitations": [
+    "KuaiRand contains no purchase/conversion label. long_view is a post-click engagement proxy and is not CVR.",
+    "Retrieval and ranking use the same dataset and time split, but this offline study does not estimate auction, bidding, or online lift."
+  ]
+}

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.DS_Store
+data/raw/
+data/processed/
+artifacts/
+experiments/*/*.png
+experiments/*/mpl/
+experiments/kuairand_pure_v2/
+experiments/kuairand_pure_v3/

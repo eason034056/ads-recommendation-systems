@@ -1,0 +1,36 @@
+{
+  "dataset": "Criteo Attribution Modeling for Bidding Dataset",
+  "license": "CC-BY-NC-SA-4.0",
+  "rows": 600000,
+  "seed": 7,
+  "split": "chronological 70/15/15 by impression timestamp; mappings are fixed hashing, not fit on future partitions",
+  "ctr": {
+    "deepfm": {
+      "auc": 0.5325726822990273,
+      "pr_auc": 0.4091249244867139,
+      "logloss": 2.7763367882596133
+    },
+    "esmm": {
+      "auc": 0.5318489098285718,
+      "pr_auc": 0.4031871393940353,
+      "logloss": 2.8347174869494745
+    }
+  },
+  "post_click_cvr": {
+    "deepfm_clicked_only": {
+      "auc": 0.696683849001558,
+      "pr_auc": 0.2890893911580841,
+      "logloss": 1.9368930018469674
+    },
+    "esmm_entire_space": {
+      "auc": 0.6887430116353053,
+      "pr_auc": 0.28354680133553556,
+      "logloss": 2.3889184402829096
+    }
+  },
+  "label_definition": "CVR uses conversion within 30 days after an impression and is evaluated on clicked test impressions; ESMM's CTCVR target is click AND conversion.",
+  "limitations": [
+    "The Criteo conversion label can include a conversion attributed to another impression; this is an offline prediction study, not causal incrementality.",
+    "Data are an anonymized, sub-sampled 30-day traffic sample; do not infer production lift, bidding utility, or TikTok performance."
+  ]
+}
