@@ -43,7 +43,7 @@ Each defect below was confirmed on the data or the code before it was fixed.
 
 ## Semantic-ID design selection
 
-The design was chosen on validation Recall@50, the retrieval metric reported in the README, with seed 7. Validation NLL is shown for reference. The test partition was not scored during selection.
+The design was chosen on validation Recall@50, the headline metric of the retrieval experiment, with seed 7. Validation NLL is shown for reference. The test partition was not scored during selection.
 
 | Item vectors | Decoder | Validation Recall@50 | Validation NLL | Distinct IDs / largest group |
 | --- | --- | ---: | ---: | --- |
