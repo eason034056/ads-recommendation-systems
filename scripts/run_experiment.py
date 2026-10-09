@@ -85,7 +85,7 @@ def train_ranking(model: nn.Module, train: tuple[np.ndarray, np.ndarray, np.ndar
         for features, click, post_click in batches(*train, shuffle=True):
             optimizer.zero_grad()
             if esmm:
-                ctr, ctcvr = model(features)
+                ctr, _, ctcvr = model(features)
                 loss = nn.functional.binary_cross_entropy(ctr, click) + nn.functional.binary_cross_entropy(ctcvr, post_click)
             else:
                 loss = nn.functional.binary_cross_entropy_with_logits(model(features), click)
@@ -98,8 +98,7 @@ def train_ranking(model: nn.Module, train: tuple[np.ndarray, np.ndarray, np.ndar
 def ranking_predictions(model: nn.Module, features: np.ndarray, esmm: bool) -> tuple[np.ndarray, np.ndarray]:
     tensor = torch.tensor(features)
     if esmm:
-        ctr, ctcvr = model(tensor)
-        pcvr = ctcvr / ctr.clamp_min(1e-6)
+        ctr, pcvr, _ = model(tensor)
         return ctr.numpy(), pcvr.numpy()
     return torch.sigmoid(model(tensor)).numpy(), np.zeros(len(features))
 

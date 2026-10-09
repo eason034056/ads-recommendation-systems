@@ -1,0 +1,331 @@
+{
+  "dataset": "Criteo Attribution Modeling for Bidding Dataset",
+  "license": "CC-BY-NC-SA-4.0",
+  "rows": 600000,
+  "seeds": [
+    7,
+    8,
+    9
+  ],
+  "split": "chronological 70/15/15 by impression timestamp; vocabularies are fit on the training partition only",
+  "features": [
+    "uid",
+    "campaign",
+    "cat1",
+    "cat2",
+    "cat3",
+    "cat4",
+    "cat5",
+    "cat6",
+    "cat7",
+    "cat8",
+    "cat9",
+    "recency"
+  ],
+  "config": {
+    "min_count": 2,
+    "max_epochs": 10,
+    "patience": 2,
+    "selection": "lowest validation logloss per model"
+  },
+  "summary": {
+    "ctr": {
+      "deepfm": {
+        "auc": {
+          "mean": 0.6713796966260314,
+          "std": 0.0010235150578658024
+        },
+        "pr_auc": {
+          "mean": 0.5433245007832737,
+          "std": 0.001065570013207608
+        },
+        "logloss": {
+          "mean": 0.6130088799936706,
+          "std": 0.001965460030688307
+        },
+        "calibration": {
+          "mean": 0.9312615668320327,
+          "std": 0.028747510538295305
+        }
+      },
+      "esmm": {
+        "auc": {
+          "mean": 0.6715457947366638,
+          "std": 0.0003763728208772485
+        },
+        "pr_auc": {
+          "mean": 0.5437496712842128,
+          "std": 0.0009211207004279093
+        },
+        "logloss": {
+          "mean": 0.6141820841907206,
+          "std": 0.0014153161928289045
+        },
+        "calibration": {
+          "mean": 0.904125630759688,
+          "std": 0.017958183311162536
+        }
+      }
+    },
+    "post_click_cvr": {
+      "deepfm_clicked_only": {
+        "auc": {
+          "mean": 0.857552658583233,
+          "std": 0.0006200794573309805
+        },
+        "pr_auc": {
+          "mean": 0.5936700978198198,
+          "std": 0.0012740474242738478
+        },
+        "logloss": {
+          "mean": 0.27724903675376655,
+          "std": 0.0004965400386777385
+        },
+        "calibration": {
+          "mean": 0.9623351067315298,
+          "std": 0.03900434259995012
+        }
+      },
+      "esmm_entire_space": {
+        "auc": {
+          "mean": 0.8469570610341037,
+          "std": 0.001173673555780862
+        },
+        "pr_auc": {
+          "mean": 0.5683427476038343,
+          "std": 0.0036351346751752923
+        },
+        "logloss": {
+          "mean": 0.28616049060638793,
+          "std": 0.000689784355329015
+        },
+        "calibration": {
+          "mean": 0.9313070544356803,
+          "std": 0.0735897670902072
+        }
+      }
+    },
+    "ctcvr": {
+      "deepfm_ctr_times_clicked_only_cvr": {
+        "auc": {
+          "mean": 0.8401894541130933,
+          "std": 0.0007607269599686692
+        },
+        "pr_auc": {
+          "mean": 0.31115238136894585,
+          "std": 0.0014284805058118486
+        },
+        "logloss": {
+          "mean": 0.15372483363045356,
+          "std": 0.00042514696156983786
+        },
+        "calibration": {
+          "mean": 0.8983591010172001,
+          "std": 0.03739575290148659
+        }
+      },
+      "esmm": {
+        "auc": {
+          "mean": 0.8328799278090709,
+          "std": 0.000266037733793167
+        },
+        "pr_auc": {
+          "mean": 0.2955137228407911,
+          "std": 0.001971640147160233
+        },
+        "logloss": {
+          "mean": 0.1564311085445219,
+          "std": 0.0009281585733284673
+        },
+        "calibration": {
+          "mean": 0.8703425329827693,
+          "std": 0.08926695822343064
+        }
+      }
+    }
+  },
+  "runs": [
+    {
+      "seed": 7,
+      "training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.6056370783903643
+        },
+        "deepfm_clicked_only": {
+          "best_epoch": 2,
+          "validation_loss": 0.27867640287519224
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 0.7606115272877215
+        }
+      },
+      "ctr": {
+        "deepfm": {
+          "auc": 0.6717447484384776,
+          "pr_auc": 0.5436722912712298,
+          "logloss": 0.6121664879929563,
+          "calibration": 0.9439064116124662
+        },
+        "esmm": {
+          "auc": 0.6715216369895151,
+          "pr_auc": 0.5436578870228108,
+          "logloss": 0.6133720839544511,
+          "calibration": 0.9179273580542133
+        }
+      },
+      "post_click_cvr": {
+        "deepfm_clicked_only": {
+          "auc": 0.8572561651087056,
+          "pr_auc": 0.5924864318952381,
+          "logloss": 0.27704519503312497,
+          "calibration": 1.0073032994175204
+        },
+        "esmm_entire_space": {
+          "auc": 0.8469542390967417,
+          "pr_auc": 0.5676859865681351,
+          "logloss": 0.2854570168200347,
+          "calibration": 0.9864019580454559
+        }
+      },
+      "ctcvr": {
+        "deepfm_ctr_times_clicked_only_cvr": {
+          "auc": 0.8401195977289528,
+          "pr_auc": 0.31147141591160843,
+          "logloss": 0.1534523089331444,
+          "calibration": 0.9408495900603651
+        },
+        "esmm": {
+          "auc": 0.8326528719781061,
+          "pr_auc": 0.29469252232178805,
+          "logloss": 0.15586339421826229,
+          "calibration": 0.928596103393698
+        }
+      }
+    },
+    {
+      "seed": 8,
+      "training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.6086281315404919
+        },
+        "deepfm_clicked_only": {
+          "best_epoch": 2,
+          "validation_loss": 0.27945534474730727
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 0.763770790210553
+        }
+      },
+      "ctr": {
+        "deepfm": {
+          "auc": 0.6702237047705577,
+          "pr_auc": 0.542128489701725,
+          "logloss": 0.6152551280261854,
+          "calibration": 0.8983590713134655
+        },
+        "esmm": {
+          "auc": 0.6711820827072953,
+          "pr_auc": 0.5428778787840216,
+          "logloss": 0.6158163298655348,
+          "calibration": 0.8838221333935258
+        }
+      },
+      "post_click_cvr": {
+        "deepfm_clicked_only": {
+          "auc": 0.8571364877019945,
+          "pr_auc": 0.5935053608424908,
+          "logloss": 0.2778150571989875,
+          "calibration": 0.9376750102573317
+        },
+        "esmm_entire_space": {
+          "auc": 0.8481321430142021,
+          "pr_auc": 0.5722614906121788,
+          "logloss": 0.28683571773248057,
+          "calibration": 0.8477340056454583
+        }
+      },
+      "ctcvr": {
+        "deepfm_ctr_times_clicked_only_cvr": {
+          "auc": 0.839466064712186,
+          "pr_auc": 0.30959135802344806,
+          "logloss": 0.1542147167589691,
+          "calibration": 0.8704534442918908
+        },
+        "esmm": {
+          "auc": 0.8328142622173594,
+          "pr_auc": 0.2977632323287718,
+          "logloss": 0.15750221005984666,
+          "calibration": 0.7675714609571589
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.6054527664731646
+        },
+        "deepfm_clicked_only": {
+          "best_epoch": 2,
+          "validation_loss": 0.2788718424186657
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 0.7610210658017355
+        }
+      },
+      "ctr": {
+        "deepfm": {
+          "auc": 0.6721706366690589,
+          "pr_auc": 0.5441727213768662,
+          "logloss": 0.6116050239618702,
+          "calibration": 0.9515192175701663
+        },
+        "esmm": {
+          "auc": 0.671933664513181,
+          "pr_auc": 0.5447132480458062,
+          "logloss": 0.6133578387521759,
+          "calibration": 0.9106274008313248
+        }
+      },
+      "post_click_cvr": {
+        "deepfm_clicked_only": {
+          "auc": 0.8582653229389992,
+          "pr_auc": 0.5950185007217309,
+          "logloss": 0.2768868580291872,
+          "calibration": 0.942027010519737
+        },
+        "esmm_entire_space": {
+          "auc": 0.8457848009913674,
+          "pr_auc": 0.5650807656311891,
+          "logloss": 0.28618873726664856,
+          "calibration": 0.9597851996161268
+        }
+      },
+      "ctcvr": {
+        "deepfm_ctr_times_clicked_only_cvr": {
+          "auc": 0.8409826998981411,
+          "pr_auc": 0.312394370171781,
+          "logloss": 0.15350747519924718,
+          "calibration": 0.8837742686993446
+        },
+        "esmm": {
+          "auc": 0.8331726492317473,
+          "pr_auc": 0.2940854138718134,
+          "logloss": 0.1559277213554568,
+          "calibration": 0.914860034597451
+        }
+      }
+    }
+  ],
+  "label_definition": "CVR uses conversion within 30 days after an impression and is evaluated on clicked test impressions; CTCVR (click AND conversion) is evaluated on all test impressions.",
+  "limitations": [
+    "The Criteo conversion label can include a conversion attributed to another impression; this is an offline prediction study, not causal incrementality.",
+    "Data are an anonymized, sub-sampled 30-day traffic sample; do not infer production lift, bidding utility, or TikTok performance."
+  ]
+}

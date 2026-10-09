@@ -26,4 +26,6 @@ def binary_metrics(labels: np.ndarray, probabilities: np.ndarray) -> dict[str, f
         "auc": float(roc_auc_score(labels, probabilities)),
         "pr_auc": float(average_precision_score(labels, probabilities)),
         "logloss": float(log_loss(labels, probabilities)),
+        # Mean prediction over observed rate; bids multiply these probabilities, so 1.0 is the target.
+        "calibration": float(probabilities.mean() / labels.mean()),
     }
