@@ -17,6 +17,14 @@ def ranking_metrics(scores: np.ndarray, targets: np.ndarray, ks: tuple[int, ...]
     return result
 
 
+def summarize(runs: list) -> dict:
+    """Mean and sample standard deviation across runs for every numeric leaf of identically nested dicts."""
+    if isinstance(runs[0], dict):
+        return {key: summarize([run[key] for run in runs]) for key in runs[0]}
+    values = np.asarray(runs, dtype=float)
+    return {"mean": float(values.mean()), "std": float(values.std(ddof=1)) if len(values) > 1 else 0.0}
+
+
 def binary_metrics(labels: np.ndarray, probabilities: np.ndarray) -> dict[str, float]:
     labels = np.asarray(labels, dtype=int)
     probabilities = np.clip(np.asarray(probabilities, dtype=float), 1e-7, 1 - 1e-7)

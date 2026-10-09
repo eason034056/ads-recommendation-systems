@@ -25,14 +25,18 @@ class RankingData:
     cardinalities: list[int]
 
 
-def load_kuairand_logs(root: Path, max_rows: int) -> pd.DataFrame:
+def load_kuairand_logs(root: Path, users: int) -> pd.DataFrame:
+    """Every standard-log interaction of the users with id below `users`, in time order.
+
+    The CSVs are sorted by user rather than time, so reading their first rows would take
+    different users from each period and cut the last user's history short.
+    """
     files = sorted(root.glob("**/log_standard_*_pure.csv"))
     if len(files) != 2:
         raise FileNotFoundError("Expected the two KuaiRand-Pure standard log CSV files")
-    per_file = max_rows // len(files)
     columns = ["user_id", "video_id", "time_ms", "is_click", "long_view", "tab"]
-    parts = [pd.read_csv(path, usecols=columns, nrows=per_file) for path in files]
-    return pd.concat(parts, ignore_index=True).sort_values("time_ms", kind="stable").reset_index(drop=True)
+    frame = pd.concat([pd.read_csv(path, usecols=columns) for path in files], ignore_index=True)
+    return frame[frame.user_id < users].sort_values("time_ms", kind="stable").reset_index(drop=True)
 
 
 def _fit_mapping(values: pd.Series) -> dict[int, int]:

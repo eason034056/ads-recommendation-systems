@@ -50,19 +50,32 @@ class RQVAE(nn.Module):
 
 
 class SemanticGRU(nn.Module):
-    """Autoregressively predicts the second residual code after the first code."""
-    def __init__(self, item_count: int, codebook_size: int, dimension: int = 32):
+    """Encodes the item history, then decodes an item's semantic-ID tokens one at a time."""
+    def __init__(self, item_count: int, vocabulary_sizes: list[int], dimension: int = 32):
         super().__init__()
         self.item_embedding = nn.Embedding(item_count, dimension, padding_idx=0)
         self.encoder = nn.GRU(dimension, dimension, batch_first=True)
-        self.first = nn.Linear(dimension, codebook_size)
-        self.code_embedding = nn.Embedding(codebook_size, dimension)
-        self.second = nn.Linear(dimension * 2, codebook_size)
+        self.token_embeddings = nn.ModuleList([nn.Embedding(size, dimension) for size in vocabulary_sizes[:-1]])
+        # A recurrent decoder lets each token's distribution depend jointly on the user state and the prefix.
+        # A linear layer over [state, prefix] only adds the two, so a user's preference among second-level
+        # codes would be the same under every first-level code.
+        self.decoder = nn.GRUCell(dimension, dimension)
+        self.heads = nn.ModuleList([nn.Linear(dimension, size) for size in vocabulary_sizes])
 
-    def forward(self, history: torch.Tensor, first_code: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        encoded, _ = self.encoder(self.item_embedding(history))
-        state = encoded[:, -1]
-        return self.first(state), self.second(torch.cat([state, self.code_embedding(first_code)], dim=1))
+    def encode(self, history: torch.Tensor) -> torch.Tensor:
+        return self.encoder(self.item_embedding(history))[0][:, -1]
+
+    def log_likelihood(self, state: torch.Tensor, codes: torch.Tensor) -> torch.Tensor:
+        """Teacher-forced log P(codes | state), summed over tokens; row i of `state` decodes row i of `codes`."""
+        total = torch.zeros(len(codes))
+        for level, head in enumerate(self.heads):
+            total = total + torch.log_softmax(head(state), dim=1).gather(1, codes[:, level:level + 1]).squeeze(1)
+            if level < len(self.token_embeddings):
+                state = self.decoder(self.token_embeddings[level](codes[:, level]), state)
+        return total
+
+    def forward(self, history: torch.Tensor, codes: torch.Tensor) -> torch.Tensor:
+        return self.log_likelihood(self.encode(history), codes)
 
 
 class FieldEmbedding(nn.Module):

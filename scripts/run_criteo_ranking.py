@@ -2,46 +2,19 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import random
-from collections.abc import Callable
 from pathlib import Path
 
 import numpy as np
 import torch
 from torch import nn
-from torch.utils.data import DataLoader, TensorDataset
 
 from adsrec.criteo import CriteoData, load_criteo_sample, make_criteo_data
-from adsrec.evaluation import binary_metrics
+from adsrec.evaluation import binary_metrics, summarize
+from adsrec.linear import fit_logistic, one_hot
 from adsrec.models import DeepFM, ESMM
-
-
-def loader(*arrays: np.ndarray, shuffle: bool = False) -> DataLoader:
-    return DataLoader(TensorDataset(*[torch.tensor(value) for value in arrays]), batch_size=1024, shuffle=shuffle)
-
-
-def fit(model: nn.Module, training: tuple[np.ndarray, ...], batch_loss: Callable[[nn.Module, list[torch.Tensor]], torch.Tensor], validation_loss: Callable[[nn.Module], float], max_epochs: int, patience: int) -> dict[str, float]:
-    """Train with Adam and restore the epoch with the lowest validation loss."""
-    optimizer = torch.optim.Adam(model.parameters(), lr=2e-3)
-    best_loss, best_epoch, best_state, stale = float("inf"), 0, copy.deepcopy(model.state_dict()), 0
-    for epoch in range(1, max_epochs + 1):
-        model.train()
-        for batch in loader(*training, shuffle=True):
-            optimizer.zero_grad()
-            batch_loss(model, batch).backward()
-            optimizer.step()
-        model.eval()  # Dropout must be off whenever the model is scored.
-        current = validation_loss(model)
-        if current < best_loss:
-            best_loss, best_epoch, best_state, stale = current, epoch, copy.deepcopy(model.state_dict()), 0
-        else:
-            stale += 1
-            if stale >= patience:
-                break
-    model.load_state_dict(best_state)
-    return {"best_epoch": best_epoch, "validation_loss": best_loss}
+from adsrec.training import fit
 
 
 @torch.no_grad()
@@ -97,14 +70,24 @@ def run_seed(data: CriteoData, seed: int, max_epochs: int, patience: int) -> dic
     }
 
 
-def summarize(runs: list[dict]) -> dict:
-    summary: dict = {}
-    for task in ("ctr", "post_click_cvr", "ctcvr"):
-        summary[task] = {}
-        for model, metrics in runs[0][task].items():
-            values = {metric: np.array([run[task][model][metric] for run in runs]) for metric in metrics}
-            summary[task][model] = {metric: {"mean": float(v.mean()), "std": float(v.std(ddof=1)) if len(v) > 1 else 0.0} for metric, v in values.items()}
-    return summary
+def run_baselines(data: CriteoData) -> dict:
+    """Seed-free references on the same fields: the training base rate, and one-hot logistic regression."""
+    (features, clicks, click_conversion), validation, (test_features, test_clicks, test_click_conversion) = data.train, data.validation, data.test
+    clicked, val_clicked, test_clicked = clicks == 1, validation[1] == 1, test_clicks == 1
+    ctr_model, ctr_strength = fit_logistic((features, clicks), (validation[0], validation[1]), data.cardinalities)
+    cvr_model, cvr_strength = fit_logistic((features[clicked], click_conversion[clicked]), (validation[0][val_clicked], validation[2][val_clicked]), data.cardinalities)
+    test_x = one_hot(test_features, data.cardinalities)
+    pctr, pcvr = ctr_model.predict_proba(test_x)[:, 1], cvr_model.predict_proba(test_x)[:, 1]
+    base_ctr, base_cvr = float(clicks.mean()), float(click_conversion[clicked].mean())
+    constant = lambda rate, labels: binary_metrics(labels, np.full(len(labels), rate))
+    return {
+        "logistic_regression_C": {"ctr": ctr_strength, "post_click_cvr": cvr_strength},
+        "ctr": {"constant": constant(base_ctr, test_clicks), "logistic_regression": binary_metrics(test_clicks, pctr)},
+        "post_click_cvr": {"constant": constant(base_cvr, test_click_conversion[test_clicked]),
+                           "logistic_regression_clicked_only": binary_metrics(test_click_conversion[test_clicked], pcvr[test_clicked])},
+        "ctcvr": {"constant": constant(base_ctr * base_cvr, test_click_conversion),
+                  "logistic_regression_ctr_times_cvr": binary_metrics(test_click_conversion, pctr * pcvr)},
+    }
 
 
 def main() -> None:
@@ -129,13 +112,14 @@ def main() -> None:
         "split": "chronological 70/15/15 by impression timestamp; vocabularies are fit on the training partition only",
         "features": data.feature_names,
         "config": {"min_count": args.min_count, "max_epochs": args.max_epochs, "patience": args.patience, "selection": "lowest validation logloss per model"},
-        "summary": summarize(runs),
+        "summary": summarize([{task: run[task] for task in ("ctr", "post_click_cvr", "ctcvr")} for run in runs]),
+        "baselines": run_baselines(data),
         "runs": runs,
         "label_definition": "CVR uses conversion within 30 days after an impression and is evaluated on clicked test impressions; CTCVR (click AND conversion) is evaluated on all test impressions.",
         "limitations": ["The Criteo conversion label can include a conversion attributed to another impression; this is an offline prediction study, not causal incrementality.", "Data are an anonymized, sub-sampled 30-day traffic sample; do not infer production lift, bidding utility, or TikTok performance."],
     }
     (args.output / "metrics.json").write_text(json.dumps(results, indent=2))
-    print(json.dumps(results["summary"], indent=2))
+    print(json.dumps({"summary": results["summary"], "baselines": results["baselines"]}, indent=2))
 
 
 if __name__ == "__main__":

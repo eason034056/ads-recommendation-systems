@@ -1,48 +1,380 @@
 {
   "dataset": "KuaiRand-Pure",
   "license": "CC-BY-SA-4.0",
-  "seed": 7,
-  "max_rows": 120000,
-  "retrieval": {
-    "popularity": {
-      "mrr": 0.018801529694349308,
-      "recall@10": 0.03373134328358209,
-      "ndcg@10": 0.017141472864090304,
-      "recall@50": 0.13223880597014925,
-      "ndcg@50": 0.03763355699407784
+  "users": 2500,
+  "rows": 130769,
+  "seeds": [
+    7,
+    8,
+    9
+  ],
+  "split": "chronological 70/15/15 over every standard-log interaction of the selected users",
+  "retrieval_examples": {
+    "train": 31607,
+    "validation": 7894,
+    "test": 7239
+  },
+  "config": {
+    "max_epochs": 30,
+    "patience": 2,
+    "rqvae_steps": 2000,
+    "codebook_size": 32,
+    "item_vectors": "standardized PPMI-SVD co-occurrence vectors from training examples",
+    "selection": "lowest validation NLL (retrieval) or log loss (ranking) per model"
+  },
+  "summary": {
+    "retrieval": {
+      "popularity": {
+        "mrr": {
+          "mean": 0.02102225392183568,
+          "std": 0.0
+        },
+        "recall@10": {
+          "mean": 0.03494957867108717,
+          "std": 0.0
+        },
+        "ndcg@10": {
+          "mean": 0.01936513393285528,
+          "std": 0.0
+        },
+        "recall@50": {
+          "mean": 0.11990606437353225,
+          "std": 0.0
+        },
+        "ndcg@50": {
+          "mean": 0.0375653664596152,
+          "std": 0.0
+        }
+      },
+      "item_gru": {
+        "mrr": {
+          "mean": 0.020163585598835684,
+          "std": 0.0003649686468469815
+        },
+        "recall@10": {
+          "mean": 0.035502141179720954,
+          "std": 0.0009961462288890716
+        },
+        "ndcg@10": {
+          "mean": 0.018971019738836897,
+          "std": 0.00029482250911360244
+        },
+        "recall@50": {
+          "mean": 0.11870884560482571,
+          "std": 0.00021101329350074906
+        },
+        "ndcg@50": {
+          "mean": 0.03668859371003139,
+          "std": 0.00026455953911959466
+        }
+      },
+      "rqvae_semantic_gru": {
+        "mrr": {
+          "mean": 0.020352526110602873,
+          "std": 0.0008293912990209361
+        },
+        "recall@10": {
+          "mean": 0.03771239121425612,
+          "std": 0.001461942981662986
+        },
+        "ndcg@10": {
+          "mean": 0.019346395214305808,
+          "std": 0.000991979413725972
+        },
+        "recall@50": {
+          "mean": 0.12469493944835842,
+          "std": 0.001905806703188736
+        },
+        "ndcg@50": {
+          "mean": 0.03789711794514156,
+          "std": 0.0008953175883628157
+        }
+      }
     },
-    "item_gru": {
-      "mrr": 0.014938303562553731,
-      "recall@10": 0.028656716417910448,
-      "ndcg@10": 0.013746084477391785,
-      "recall@50": 0.10268656716417911,
-      "ndcg@50": 0.02928312503076932
-    },
-    "rqvae_semantic_gru": {
-      "mrr": 0.002834175293809078,
-      "recall@10": 0.00417910447761194,
-      "ndcg@10": 0.0019818577240280056,
-      "recall@50": 0.013432835820895522,
-      "ndcg@50": 0.003956619050785888
+    "ranking": {
+      "deepfm_ctr": {
+        "auc": {
+          "mean": 0.7415252556966084,
+          "std": 0.0006916862571165054
+        },
+        "pr_auc": {
+          "mean": 0.6571983079782635,
+          "std": 0.0009418249553186941
+        },
+        "logloss": {
+          "mean": 0.5924900708697298,
+          "std": 0.0007492894880991855
+        },
+        "calibration": {
+          "mean": 1.0790194013852463,
+          "std": 0.017612722054009617
+        }
+      },
+      "esmm_ctr": {
+        "auc": {
+          "mean": 0.7426789042033333,
+          "std": 0.0007066275392136314
+        },
+        "pr_auc": {
+          "mean": 0.6611518848632989,
+          "std": 0.0007939037013808184
+        },
+        "logloss": {
+          "mean": 0.5945130731776136,
+          "std": 0.0022758443175811822
+        },
+        "calibration": {
+          "mean": 1.1152032597601511,
+          "std": 0.014193064482451724
+        }
+      },
+      "esmm_post_click_long_view_proxy": {
+        "auc": {
+          "mean": 0.6089832920343342,
+          "std": 0.002026861126728103
+        },
+        "pr_auc": {
+          "mean": 0.7819912737978559,
+          "std": 0.001816831932755195
+        },
+        "logloss": {
+          "mean": 0.5880224912977553,
+          "std": 0.0006883414140950894
+        },
+        "calibration": {
+          "mean": 1.016750914092042,
+          "std": 0.0024054856331756
+        }
+      }
     }
   },
-  "ranking": {
-    "deepfm_ctr": {
-      "auc": 0.596341135109137,
-      "pr_auc": 0.5082639722871582,
-      "logloss": 1.34005192018793
+  "runs": [
+    {
+      "seed": 7,
+      "retrieval": {
+        "popularity": {
+          "mrr": 0.02102225392183568,
+          "recall@10": 0.03494957867108717,
+          "ndcg@10": 0.01936513393285528,
+          "recall@50": 0.11990606437353225,
+          "ndcg@50": 0.0375653664596152
+        },
+        "item_gru": {
+          "mrr": 0.019758740472364464,
+          "recall@10": 0.035225859925404064,
+          "ndcg@10": 0.018663836774653133,
+          "recall@50": 0.11866279872910623,
+          "ndcg@50": 0.03639258347576093
+        },
+        "rqvae_semantic_gru": {
+          "mrr": 0.021196065973832983,
+          "recall@10": 0.03937007874015748,
+          "ndcg@10": 0.020434710066018994,
+          "recall@50": 0.12612239259566238,
+          "ndcg@50": 0.038930203025224694
+        }
+      },
+      "ranking": {
+        "deepfm_ctr": {
+          "auc": 0.7420563207802836,
+          "pr_auc": 0.6570793361815963,
+          "logloss": 0.591775230039699,
+          "calibration": 1.0589204376560393
+        },
+        "esmm_ctr": {
+          "auc": 0.7434647985830597,
+          "pr_auc": 0.6620573518813775,
+          "logloss": 0.5927334435373957,
+          "calibration": 1.104115977098485
+        },
+        "esmm_post_click_long_view_proxy": {
+          "auc": 0.6097933426386358,
+          "pr_auc": 0.7827794289613745,
+          "logloss": 0.5879468591315582,
+          "calibration": 1.0141937867685538
+        }
+      },
+      "training": {
+        "item_gru": {
+          "best_epoch": 1,
+          "validation_loss": 7.710946559906006
+        },
+        "rqvae_semantic_gru": {
+          "best_epoch": 8,
+          "validation_loss": 7.938462734222412
+        }
+      },
+      "semantic_ids": {
+        "items": 4647,
+        "distinct_ids": 669,
+        "largest_group": 595,
+        "items_sharing_an_id": 0.9584678287066924,
+        "level_1_codes_used": 32,
+        "level_2_codes_used": 32,
+        "deduplication_tokens": 595
+      },
+      "ranking_training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.5713255914589751
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 1.1064708924650408
+        }
+      }
     },
-    "esmm_ctr": {
-      "auc": 0.590201087777574,
-      "pr_auc": 0.5071407528242469,
-      "logloss": 1.3200900090836325
+    {
+      "seed": 8,
+      "retrieval": {
+        "popularity": {
+          "mrr": 0.02102225392183568,
+          "recall@10": 0.03494957867108717,
+          "ndcg@10": 0.01936513393285528,
+          "recall@50": 0.11990606437353225,
+          "ndcg@50": 0.0375653664596152
+        },
+        "item_gru": {
+          "mrr": 0.0204673858265773,
+          "recall@10": 0.03467329741677027,
+          "ndcg@10": 0.018997531396540732,
+          "recall@50": 0.11852465810194779,
+          "ndcg@50": 0.03690198388390386
+        },
+        "rqvae_semantic_gru": {
+          "mrr": 0.02032346510586361,
+          "recall@10": 0.036607266196988536,
+          "ndcg@10": 0.01911159396652151,
+          "recall@50": 0.12253073628954275,
+          "ndcg@50": 0.037414413209609684
+        }
+      },
+      "ranking": {
+        "deepfm_ctr": {
+          "auc": 0.7417763538603618,
+          "pr_auc": 0.6581939661524948,
+          "logloss": 0.5924253696461543,
+          "calibration": 1.086379697330132
+        },
+        "esmm_ctr": {
+          "auc": 0.7424759570058669,
+          "pr_auc": 0.6605751344342645,
+          "logloss": 0.5970774494673646,
+          "calibration": 1.1311990397136906
+        },
+        "esmm_post_click_long_view_proxy": {
+          "auc": 0.6104798527914755,
+          "pr_auc": 0.7832809381353179,
+          "logloss": 0.5873750893615814,
+          "calibration": 1.018968725335639
+        }
+      },
+      "training": {
+        "item_gru": {
+          "best_epoch": 2,
+          "validation_loss": 7.715003967285156
+        },
+        "rqvae_semantic_gru": {
+          "best_epoch": 8,
+          "validation_loss": 7.95385217666626
+        }
+      },
+      "semantic_ids": {
+        "items": 4647,
+        "distinct_ids": 646,
+        "largest_group": 799,
+        "items_sharing_an_id": 0.964923606627932,
+        "level_1_codes_used": 32,
+        "level_2_codes_used": 32,
+        "deduplication_tokens": 799
+      },
+      "ranking_training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.570510898037578
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 1.1085915478082558
+        }
+      }
     },
-    "esmm_post_click_long_view_proxy": {
-      "auc": 0.517114968596367,
-      "pr_auc": 0.7169011440482013,
-      "logloss": 2.062759504554464
+    {
+      "seed": 9,
+      "retrieval": {
+        "popularity": {
+          "mrr": 0.02102225392183568,
+          "recall@10": 0.03494957867108717,
+          "ndcg@10": 0.01936513393285528,
+          "recall@50": 0.11990606437353225,
+          "ndcg@50": 0.0375653664596152
+        },
+        "item_gru": {
+          "mrr": 0.020264630497565293,
+          "recall@10": 0.036607266196988536,
+          "ndcg@10": 0.019251691045316828,
+          "recall@50": 0.11893907998342312,
+          "ndcg@50": 0.03677121377042939
+        },
+        "rqvae_semantic_gru": {
+          "mrr": 0.019538047252112032,
+          "recall@10": 0.03715982870562232,
+          "ndcg@10": 0.018492881610376915,
+          "recall@50": 0.12543168945987015,
+          "ndcg@50": 0.03734673760059032
+        }
+      },
+      "ranking": {
+        "deepfm_ctr": {
+          "auc": 0.7407430924491796,
+          "pr_auc": 0.6563216216006995,
+          "logloss": 0.593269612923336,
+          "calibration": 1.0917580691695679
+        },
+        "esmm_ctr": {
+          "auc": 0.742095957021073,
+          "pr_auc": 0.6608231682742547,
+          "logloss": 0.5937283265280804,
+          "calibration": 1.110294762468278
+        },
+        "esmm_post_click_long_view_proxy": {
+          "auc": 0.6066766806728912,
+          "pr_auc": 0.7799134542968752,
+          "logloss": 0.5887455254001264,
+          "calibration": 1.0170902301719338
+        }
+      },
+      "training": {
+        "item_gru": {
+          "best_epoch": 2,
+          "validation_loss": 7.705056190490723
+        },
+        "rqvae_semantic_gru": {
+          "best_epoch": 8,
+          "validation_loss": 7.941719055175781
+        }
+      },
+      "semantic_ids": {
+        "items": 4647,
+        "distinct_ids": 670,
+        "largest_group": 804,
+        "items_sharing_an_id": 0.9647084140305574,
+        "level_1_codes_used": 32,
+        "level_2_codes_used": 32,
+        "deduplication_tokens": 804
+      },
+      "ranking_training": {
+        "deepfm_ctr": {
+          "best_epoch": 1,
+          "validation_loss": 0.5704621224987401
+        },
+        "esmm": {
+          "best_epoch": 1,
+          "validation_loss": 1.1038530591301527
+        }
+      }
     }
-  },
+  ],
   "limitations": [
     "KuaiRand contains no purchase/conversion label. long_view is a post-click engagement proxy and is not CVR.",
     "Retrieval and ranking use the same dataset and time split, but this offline study does not estimate auction, bidding, or online lift."

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from adsrec.evaluation import binary_metrics, ranking_metrics
+from adsrec.evaluation import binary_metrics, ranking_metrics, summarize
 
 
 def test_ranking_metrics_perfect_ranking():
@@ -12,6 +12,12 @@ def test_ranking_metrics_perfect_ranking():
 
 def test_binary_metrics_calibration_compares_mean_prediction_to_rate():
     assert binary_metrics(np.array([0, 0, 0, 1]), np.array([0.5, 0.5, 0.5, 0.5]))["calibration"] == 2.0
+
+
+def test_summarize_reports_mean_and_sample_std_of_nested_leaves():
+    summary = summarize([{"ctr": {"auc": 0.5}}, {"ctr": {"auc": 0.7}}])
+    assert summary["ctr"]["auc"]["mean"] == pytest.approx(0.6)
+    assert summary["ctr"]["auc"]["std"] == pytest.approx(0.02 ** 0.5)
 
 
 def test_binary_metrics_rejects_single_class():
