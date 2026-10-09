@@ -27,6 +27,8 @@ Each defect below was confirmed on the data or the code before it was fixed.
 
 ESMM still trails the clicked-only baseline on post-click CVR. Two factors are consistent with that and were not tuned away. First, the joint validation loss selects epoch 1 for ESMM, while the clicked-only CVR model improves until epoch 2, so the shared checkpoint is a compromise between tasks. Second, clicked test impressions are exactly the distribution the clicked-only model was trained on, which favors it on this metric by construction.
 
+For reference, the ESMM paper (Ma et al., SIGIR 2018) reports on its public Taobao dataset (84M impressions, 3.4M clicks, 18k conversions, so about 0.53% of clicks convert) a CVR AUC of 0.6856 against 0.6600 for a single-task model trained on clicks (+0.0256), and a CTCVR AUC of 0.6532 against 0.6207. In this sample, 14.3% of training clicks convert, about 27 times the paper's rate, so the conversion sparsity that ESMM targets is much milder here. That explanation is consistent with the result but has not been tested directly, for example by downsampling training conversions.
+
 ## Why `kuairand-120k-s7` was superseded
 
 Each defect below was confirmed on the data or the code before it was fixed.
